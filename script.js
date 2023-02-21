@@ -2,44 +2,64 @@
 //when paper selected, input into playerSelection
 //when scissors selected, input scissors into playerSelection
 
-const computerSelection = getComputerChoice();
 const buttons = document.querySelectorAll('button');
 
 let result = document.querySelector('#result');
-
-
-buttons.forEach(button => {
-    button.addEventListener('click', function(){
-        playRound(button.value)
-    })
-})
-
 let playerScore = 0
 let computerScore = 0
 
+function disableButton() {
+    buttons.forEach(elem => {
+        elem.disabled = true;
+    });
+};
+
 /* computer function */
 function getComputerChoice() {
-    let choice = ['rock', 'paper', 'scissors'];
+    let choice = ['rock', 'paper', 'scissors']
     return choice[Math.floor(Math.random() * choice.length)];
 };
 
 /* round function and win or loss */
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection) {
+    const computerSelection = getComputerChoice();
+    let result = '';
+
     if (playerSelection == 'rock' && computerSelection == 'scissors' ||
     playerSelection == 'paper' && computerSelection == 'rock' ||
     playerSelection == 'scissors' && computerSelection == 'paper'){
-        playerScore++
-        result += 'Easy dub '+playerSelection+' beats '+computerSelection
-    } else if (playerSelection === computerSelection){
-        result += "It's a draw, you both chose "+playerSelection
-    } else {
-        computerScore++
-        result += computerSelection+' beats '+playerSelection+' bro really lost to a computer';
         
+        playerScore += 1
+        result = ('Easy dub '+playerSelection+' beats '+computerSelection
+        + '<br><br>Player Score: ' + playerScore + '<br>Computer Score: ' + computerScore)
+        
+        if (playerScore == 5) {
+            result += '<br><br>You got to 5 first Big dubs';
+            disableButton();
+        }
+
+    } else if (playerSelection === computerSelection){
+        result = ('It\'s a draw, you both chose '+playerSelection
+            + '<br><br>Player Score: ' + playerScore + '<br>Computer Score: ' + computerScore)
+
+    } else {
+        computerScore += 1
+        result = (computerSelection+' beats '+playerSelection+' bro really lost to a computer'
+        + '<br><br>Player Score: ' + playerScore + '<br>Computer Score: ' + computerScore)
+        if (computerScore == 5) {
+            result += '<br><br>Computer got to 5 first Holy L';
+            disableButton();
+        }
     }
-    
+    document.getElementById('result').innerHTML = result;
+    return
 }
 
+buttons.forEach(button => {
+    button.addEventListener('click', function(){
+        playRound(button.textContent);
+    })
+})
 
 /* loop for the game */
 /*function game() {
@@ -53,10 +73,3 @@ function playRound(playerSelection, computerSelection) {
 
 
 //game();
-
-/* game over message */
-if (playerScore == 5) {
-    result += 'You got to 5 first Big dubs';
-} else if (computerScore == 5) {
-    result += 'Computer got to 5 first Holy L';
-}
